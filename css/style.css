@@ -1,0 +1,1177 @@
+/* =========================================================================
+   تحدي الوطن — الهوية البصرية
+   نفس عائلة «تحدي رجا»: ليل أخضر وذهب وسدو، مع لمسة اليوم الوطني.
+   ========================================================================= */
+
+:root {
+  --night: #0A1A14;
+  --night-2: #0F2A20;
+  --panel: #12382A;
+  --panel-2: #173F2F;
+  --gold: #D4AF37;
+  --gold-soft: #C9A24B;
+  --sand: #EFE3C6;
+  --clay: #B85C38;
+  --flag: #006C35;          /* أخضر العلم */
+  --flag-bright: #17A65C;
+  --teamA: #3FA796;
+  --teamB: #C9A24B;
+  --used: #0C2218;
+  --text: #EFE3C6;
+  --muted: #9FB8AB;
+  --error: #E74C3C;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; min-height: 100%; }
+
+body {
+  background: radial-gradient(1200px 700px at 50% -10%, #173F2F 0%, var(--night) 55%, #060F0B 100%);
+  color: var(--text);
+  font-family: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+button { font-family: inherit; }
+
+/* العناصر القابلة للنقر أزرار حقيقية حتى تعمل بلوحة المفاتيح */
+.lifeline-chip, .cat-card, .cell, .team-lifelines .ic {
+  font-family: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.cat-card, .cell { width: 100%; }
+.team-lifelines .ic { background: transparent; line-height: 1; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ============================= زخرفة السدو ============================= */
+.sadu {
+  height: 14px;
+  width: 100%;
+  background:
+    repeating-linear-gradient(135deg, var(--gold) 0 7px, transparent 7px 14px),
+    repeating-linear-gradient(45deg, var(--gold) 0 7px, transparent 7px 14px);
+  background-blend-mode: screen;
+  opacity: 0.85;
+  mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+}
+
+.sadu-strip {
+  height: 10px;
+  background-image:
+    repeating-linear-gradient(45deg, var(--gold) 0, var(--gold) 5px, transparent 5px, transparent 10px),
+    repeating-linear-gradient(-45deg, var(--flag-bright) 0, var(--flag-bright) 5px, transparent 5px, transparent 10px);
+  background-size: 20px 20px, 20px 20px;
+  opacity: 0.55;
+}
+
+/* ============================= الترويسة ============================= */
+header {
+  text-align: center;
+  padding: 26px 16px 12px;
+  position: relative;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 16px);
+  flex-wrap: wrap;
+}
+
+.brand-mark {
+  width: clamp(54px, 11vw, 82px);
+  height: clamp(54px, 11vw, 82px);
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.45));
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+/* الحدّ الأبيض تحت، والذهب فوقه */
+.brand-mark .mk-out { stroke: #FFFFFF; stroke-width: 16; }
+.brand-mark .mk-in  { stroke: url(#ndGold); stroke-width: 8; }
+
+.brand {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(23px, 4.6vw, 42px);
+  letter-spacing: 0;
+  line-height: 1.25;
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(212, 175, 55, 0.35), 0 2px 0 rgba(0, 0, 0, 0.4);
+  margin: 0;
+}
+
+.brand span { color: var(--sand); }
+
+.tag {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.ndbar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.nd-pill {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(0, 108, 53, 0.35);
+  border: 1px solid rgba(23, 166, 92, 0.55);
+  color: #CDEBD8;
+}
+
+.nd-pill.alt {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.45);
+  color: var(--gold);
+}
+
+/* ============================= الشاشات ============================= */
+.screen {
+  display: none;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.screen.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================= الرئيسية ============================= */
+.home-container { max-width: 620px; margin: 0 auto; text-align: center; }
+
+.hero-section { margin: 34px 0 10px; }
+
+.hero-title {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(26px, 5vw, 40px);
+  color: var(--sand);
+  margin: 14px 0 10px;
+}
+
+.hero-subtitle { color: var(--muted); font-size: 15px; margin: 0; line-height: 1.7; }
+
+.home-buttons { display: flex; flex-direction: column; gap: 12px; margin: 30px 0; }
+
+.btn-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  padding: 15px 26px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.btn-main:hover:not(:disabled) { transform: translateY(-2px); }
+.btn-main:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-primary {
+  background: linear-gradient(180deg, var(--flag-bright), var(--flag));
+  color: #FFFFFF;
+  box-shadow: 0 8px 22px rgba(0, 108, 53, 0.35);
+}
+.btn-primary:hover:not(:disabled) { box-shadow: 0 12px 28px rgba(0, 108, 53, 0.45); }
+
+.btn-secondary {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border-color: rgba(212, 175, 55, 0.3);
+  color: var(--sand);
+}
+.btn-secondary:hover:not(:disabled) { border-color: var(--gold); }
+
+.btn-ghost {
+  background: transparent;
+  border-color: rgba(212, 175, 55, 0.28);
+  color: var(--muted);
+}
+.btn-ghost:hover:not(:disabled) { color: var(--sand); border-color: var(--gold); }
+
+.btn-icon { font-size: 19px; }
+
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.stat-card {
+  background: rgba(18, 56, 42, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 14px;
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-icon { font-size: 22px; }
+.stat-label { color: var(--muted); font-size: 12px; }
+.stat-value {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: 21px;
+  color: var(--gold);
+}
+
+/* ============================= عناوين الخطوات ============================= */
+.step-title {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(22px, 3.6vw, 30px);
+  text-align: center;
+  color: var(--sand);
+  margin-top: 10px;
+}
+
+.step-sub {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin: 6px 0 24px;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+.nav-buttons .btn-main { min-width: 150px; }
+
+/* ============================= إعداد الفرق ============================= */
+.setup-container { max-width: 900px; margin: 0 auto; }
+
+.setup-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.team-setup {
+  background: linear-gradient(180deg, var(--panel-2), var(--night-2));
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.team-setup.A { border-top: 3px solid var(--teamA); }
+.team-setup.B { border-top: 3px solid var(--teamB); }
+
+.team-setup label {
+  display: block;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: var(--sand);
+}
+
+.team-setup input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 15px;
+}
+
+.team-setup input:focus { outline: none; border-color: var(--gold); }
+
+.lifelines-label {
+  margin: 16px 0 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.lifelines { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.lifeline-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.lifeline-chip:hover { border-color: var(--gold); }
+
+.lifeline-chip.sel {
+  background: rgba(0, 108, 53, 0.4);
+  border-color: var(--flag-bright);
+  color: #DFF3E6;
+}
+
+.lifeline-chip .ic { font-size: 15px; }
+
+.lifeline-count {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}
+
+.setup-status, .selection-status {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--muted);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}
+
+.setup-status.ok { color: var(--flag-bright); }
+
+/* ============================= الفئات ============================= */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.cat-card {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 14px;
+  padding: 18px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.cat-card:hover { transform: translateY(-3px); border-color: var(--gold); }
+
+.cat-card.sel {
+  border-color: var(--flag-bright);
+  background: linear-gradient(180deg, rgba(0, 108, 53, 0.45), rgba(10, 40, 26, 0.9));
+  box-shadow: 0 8px 20px rgba(0, 108, 53, 0.28);
+}
+
+.cat-ic { font-size: 30px; }
+
+.cat-name {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  color: var(--sand);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.cat-count { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ============================= لوحة اللعب ============================= */
+.game-header { max-width: 1180px; margin: 0 auto; }
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.team-card {
+  background: linear-gradient(180deg, var(--panel-2), var(--night-2));
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.team-card.A.active { border-color: var(--teamA); box-shadow: 0 0 0 2px rgba(63, 167, 150, 0.35); }
+.team-card.B.active { border-color: var(--teamB); box-shadow: 0 0 0 2px rgba(201, 162, 75, 0.35); }
+
+.team-name {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--sand);
+}
+
+.team-score {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: 34px;
+  color: var(--gold);
+  line-height: 1.2;
+}
+
+.team-lifelines { display: flex; justify-content: center; gap: 8px; min-height: 26px; }
+
+.team-lifelines .ic {
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  transition: all 0.15s;
+}
+
+.team-lifelines .ic:hover { background: rgba(212, 175, 55, 0.15); }
+
+.team-lifelines .ic.used {
+  opacity: 0.28;
+  cursor: default;
+  filter: grayscale(1);
+  border-color: transparent;
+}
+
+.turn-banner {
+  text-align: center;
+  margin: 14px auto 4px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--sand);
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 999px;
+  padding: 8px 18px;
+  width: fit-content;
+}
+
+.turn-dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-inline-end: 6px;
+  vertical-align: middle;
+}
+
+.turn-dot.A { background: var(--teamA); }
+.turn-dot.B { background: var(--teamB); }
+
+.reset-btn {
+  display: block;
+  margin: 10px auto 0;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.reset-btn:hover { color: var(--sand); border-color: var(--gold); }
+
+.board-wrap { max-width: 1180px; margin: 18px auto 40px; }
+
+.board { display: grid; gap: 10px; }
+
+.cat-header {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: clamp(11px, 1.4vw, 14px);
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 10px 10px 4px 4px;
+  text-align: center;
+  padding: 12px 4px;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--sand);
+  line-height: 1.25;
+}
+
+.cat-header .ic { font-size: 18px; }
+
+.cell {
+  background: linear-gradient(180deg, #0E2B20, #0A2118);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 8px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(16px, 2.2vw, 24px);
+  color: var(--gold-soft);
+  text-align: center;
+  padding: 16px 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(212, 175, 55, 0.18);
+  background: linear-gradient(180deg, #123726, #0D2B1F);
+}
+
+.cell.used {
+  background: var(--used);
+  color: #2C4A3D;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
+.cell.used:hover { transform: none; box-shadow: none; }
+
+/* ============================= نافذة السؤال ============================= */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 10, 7, 0.92);
+  backdrop-filter: blur(3px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.overlay.show { display: flex; }
+
+.qcard {
+  width: min(900px, 96vw);
+  background: linear-gradient(180deg, var(--panel-2), var(--night-2));
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 20px;
+  padding: 26px 26px 18px;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  max-height: 92vh;
+  overflow: auto;
+}
+
+.btn-close {
+  position: absolute;
+  top: 14px;
+  inset-inline-start: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--gold);
+  border-radius: 10px;
+  width: 34px; height: 34px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-close:hover { background: rgba(212, 175, 55, 0.18); }
+
+.qcard .topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 0 44px 10px 0;
+}
+
+.qcat {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  color: var(--gold);
+  font-size: 15px;
+}
+
+.qpoints {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  color: var(--sand);
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.lifeline-banner {
+  background: rgba(0, 108, 53, 0.22);
+  border: 1px dashed rgba(23, 166, 92, 0.6);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.ll-ic { font-size: 17px; margin-inline-end: 4px; }
+.ll-desc { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.ll-timer {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  color: var(--gold);
+  margin-top: 4px;
+  min-height: 18px;
+}
+
+.qimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 58px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  margin: 10px 0 18px;
+  min-height: 96px;
+}
+
+.qtext {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 2.5vw, 25px);
+  text-align: center;
+  color: var(--sand);
+  line-height: 1.65;
+  padding: 6px 4px 18px;
+}
+
+.qtext.hide { display: none; }
+
+.atext {
+  display: none;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: clamp(17px, 2.3vw, 23px);
+  text-align: center;
+  color: #9FE3BC;
+  background: rgba(0, 108, 53, 0.18);
+  border: 1px dashed rgba(23, 166, 92, 0.6);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 0 0 18px;
+  line-height: 1.6;
+}
+
+.atext.show { display: block; }
+
+.errbox {
+  text-align: center;
+  color: var(--clay);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  padding: 24px 0;
+}
+
+/* ---- عدّاد السؤال ---- */
+.qtimer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+}
+
+.timer-view {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--gold);
+  min-width: 84px;
+  text-align: center;
+}
+
+.timer-view.low { color: var(--error); }
+
+/* ---- أزرار النافذة ---- */
+.btn {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  padding: 10px 18px;
+  border-radius: 11px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-answer {
+  background: linear-gradient(180deg, var(--flag-bright), var(--flag));
+  color: #FFFFFF;
+}
+.btn-answer:hover:not(:disabled) { filter: brightness(1.1); }
+
+.btn-timer {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.4);
+  color: var(--gold);
+}
+.btn-timer:hover:not(:disabled) { background: rgba(212, 175, 55, 0.22); }
+
+.btn-skip {
+  background: transparent;
+  border-color: rgba(184, 92, 56, 0.6);
+  color: #E0A288;
+}
+.btn-skip:hover { background: rgba(184, 92, 56, 0.18); }
+
+.btn-award {
+  color: #0A1A14;
+  margin-inline-end: 8px;
+  margin-bottom: 8px;
+}
+
+.btn-award.A { background: var(--teamA); }
+.btn-award.B { background: var(--teamB); }
+.btn-award:hover:not(:disabled) { filter: brightness(1.12); }
+.btn-award.blocked { background: #3A4A42; color: #90A69B; }
+
+.corners {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  padding-top: 16px;
+}
+
+.corner { display: flex; flex-direction: column; gap: 8px; }
+
+.corner-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}
+
+/* ============================= نافذة عامة ============================= */
+.modal-overlay { z-index: 60; }
+
+.modal-box {
+  width: min(460px, 94vw);
+  background: linear-gradient(180deg, var(--panel-2), var(--night-2));
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 18px;
+  padding: 26px 22px 20px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.modal-text {
+  font-size: 15.5px;
+  line-height: 1.9;
+  color: var(--sand);
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.modal-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.modal-actions .btn-main { min-width: 110px; font-size: 15px; padding: 11px 20px; }
+
+/* ============================= النهاية ============================= */
+.end-wrap { max-width: 620px; margin: 20px auto 0; text-align: center; }
+
+.end-trophy { font-size: 64px; line-height: 1; }
+
+.end-title {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(24px, 4vw, 34px);
+  color: var(--gold);
+  margin-top: 8px;
+}
+
+.winner-name {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(22px, 3.6vw, 30px);
+  margin-top: 8px;
+}
+
+.winner-name.A { color: var(--teamA); }
+.winner-name.B { color: var(--teamB); }
+
+.winner-margin, .tie-text { color: var(--muted); font-size: 15px; margin-top: 4px; }
+
+.end-scores {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 26px 0 6px;
+}
+
+.end-score-card {
+  background: linear-gradient(180deg, var(--panel-2), var(--night-2));
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 16px;
+  padding: 16px 10px;
+}
+
+.end-score-card.lead { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.22); }
+
+.end-team-name {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  color: var(--sand);
+}
+
+.end-team-score {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 900;
+  font-size: 32px;
+  color: var(--gold);
+}
+
+/* ============================= التذييل ============================= */
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 24px 16px 34px;
+  border-top: 1px solid rgba(212, 175, 55, 0.14);
+}
+
+footer p { margin: 4px 0; }
+.foot-sub { font-size: 12px; opacity: 0.8; }
+
+
+/* ============================= لوحة الإدارة ============================= */
+.admin-gear {
+  position: absolute;
+  top: 20px;
+  inset-inline-start: 20px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--gold);
+  font-size: 18px;
+  border-radius: 10px;
+  padding: 8px 11px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+  z-index: 2;
+}
+
+.admin-gear:hover { background: rgba(212, 175, 55, 0.15); transform: scale(1.05); }
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 900px;
+  margin: 0 auto 18px;
+}
+
+.admin-header .step-title { margin: 0; text-align: start; }
+
+.admin-header .btn-close {
+  position: static;
+  flex: none;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 900px;
+  margin: 0 auto 16px;
+}
+
+.admin-tab {
+  flex: 1 1 auto;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: var(--muted);
+  border-radius: 11px;
+  padding: 9px 14px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.admin-tab:hover { color: var(--sand); border-color: var(--gold); }
+
+.admin-tab.active {
+  background: linear-gradient(180deg, var(--flag-bright), var(--flag));
+  border-color: var(--flag-bright);
+  color: #FFFFFF;
+}
+
+.admin-content {
+  max-width: 900px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, var(--panel-2), var(--night-2));
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+
+.admin-section h3 {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--gold);
+  margin: 0 0 14px;
+}
+
+.admin-section h4 {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  color: var(--sand);
+  margin: 18px 0 8px;
+}
+
+.admin-hint {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.8;
+  margin: 10px 0 0;
+}
+
+.admin-form { display: flex; flex-direction: column; gap: 10px; }
+
+.admin-form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-form-row input { flex: 1 1 160px; }
+
+.bank-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.bank-controls select { flex: 1 1 180px; }
+
+.admin-content input[type="text"],
+.admin-content input[type="number"],
+.admin-content select {
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14.5px;
+  width: 100%;
+}
+
+.admin-content input:focus,
+.admin-content select:focus { outline: none; border-color: var(--gold); }
+
+.admin-content select option { background: var(--night-2); color: var(--text); }
+
+.icon-input { max-width: 130px; text-align: center; }
+
+/* ---- قائمة الأسئلة ---- */
+.bank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-inline-end: 4px;
+}
+
+.bank-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: 11px;
+  padding: 11px 13px;
+}
+
+.bank-item.editing { border-color: var(--flag-bright); background: rgba(0, 108, 53, 0.22); }
+
+.bank-item-body { flex: 1; min-width: 0; }
+
+.bank-q {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--sand);
+  line-height: 1.6;
+}
+
+.bank-a { font-size: 13px; color: var(--flag-bright); margin-top: 3px; line-height: 1.6; }
+
+.bank-item-acts { display: flex; gap: 6px; flex: none; }
+
+.icon-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--gold);
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.icon-btn:hover { background: rgba(212, 175, 55, 0.18); }
+.icon-btn.danger { color: #E0A288; border-color: rgba(184, 92, 56, 0.5); }
+.icon-btn.danger:hover { background: rgba(184, 92, 56, 0.22); }
+
+.bank-count {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}
+
+/* ---- الفئات ---- */
+.cat-admin-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+
+.cat-admin-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: 11px;
+  padding: 10px 13px;
+  font-size: 14px;
+  color: var(--sand);
+}
+
+.cat-q-count {
+  display: inline-block;
+  margin-inline-start: 8px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--gold);
+  border-radius: 999px;
+  padding: 1px 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---- النقاط ---- */
+.points-inputs {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px 14px;
+  align-items: center;
+  max-width: 340px;
+  margin-bottom: 16px;
+}
+
+.points-inputs label {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--sand);
+}
+
+/* ---- النسخة الاحتياطية ---- */
+.backup-info {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--gold);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}
+
+.admin-danger {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+.admin-danger .btn { width: 100%; }
+
+.cat-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.9;
+  padding: 30px 16px;
+  border: 1px dashed rgba(212, 175, 55, 0.28);
+  border-radius: 14px;
+}
+
+/* ============================= الجوال ============================= */
+@media (max-width: 768px) {
+  .setup-row { grid-template-columns: 1fr; }
+  .home-stats { grid-template-columns: repeat(3, 1fr); }
+  .stat-value { font-size: 18px; }
+  .nav-buttons .btn-main { flex: 1 1 130px; min-width: 0; }
+}
+
+@media (max-width: 620px) {
+  .board { gap: 6px; }
+  .cat-header { font-size: 10px; padding: 8px 2px; min-height: 52px; }
+  .cat-header .ic { font-size: 15px; }
+  .cell { padding: 12px 2px; min-height: 50px; font-size: 15px; }
+  .qcard { padding: 20px 16px 14px; }
+  .qcard .topline { margin-inline-end: 40px; }
+  .qimg { font-size: 44px; min-height: 76px; }
+  .corners { flex-direction: column; align-items: stretch; }
+  .corner { width: 100%; }
+  .btn-award { width: 100%; margin-inline-end: 0; }
+  .end-trophy { font-size: 52px; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-content { padding: 15px 13px; }
+  .admin-tab { flex: 1 1 calc(50% - 4px); font-size: 12.5px; padding: 8px 10px; }
+  .admin-gear { top: 14px; inset-inline-start: 12px; padding: 6px 9px; font-size: 16px; }
+  .icon-input { max-width: 100%; }
+  .points-inputs { grid-template-columns: 70px 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

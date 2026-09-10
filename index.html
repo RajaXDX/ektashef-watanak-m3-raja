@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اكتشف وطنك مع رجا - لعبة اليوم الوطني السعودي</title>
+  <meta name="description" content="لعبة أسئلة جماعية لليوم الوطني السعودي — فريقان على جهاز واحد، ٥٤ سؤالاً عن الوطن وتاريخه ورموزه، بلا حساب ولا إنترنت.">
+  <meta name="theme-color" content="#0A1A14">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- ?v= رقم الإصدار: غيّره عند أي تعديل حتى تصل النسخة الجديدة للمتصفحات -->
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body>
+
+<div class="sadu"></div>
+
+<header>
+  <button class="admin-gear" id="btnAdmin" type="button" title="بنك الأسئلة">⚙️</button>
+  <div class="brand-row">
+    <!-- شعار المملكة: سيفان ونخلة — مرسوم بالكامل، تمريرة بيضاء تحت وذهبية فوق -->
+    <svg class="brand-mark" viewBox="-4 -6 208 224" role="img" aria-label="شعار المملكة العربية السعودية: سيفان متقاطعان ونخلة">
+      <defs>
+        <linearGradient id="ndGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F2C452"/>
+          <stop offset="45%" stop-color="#E5AE38"/>
+          <stop offset="100%" stop-color="#F8E49B"/>
+        </linearGradient>
+
+        <g id="ndSwords" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M147,201 C133,195 116,182 100,166 C78,159 42,153 8,129"/>
+          <path d="M117,191 L128,178"/>
+          <path d="M150,204 L150,204"/>
+          <path d="M53,201 C67,195 84,182 100,166 C122,159 158,153 192,129"/>
+          <path d="M83,191 L72,178"/>
+          <path d="M50,204 L50,204"/>
+        </g>
+
+        <g id="ndPalm" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M100,40 L100,205"/>
+          <path d="M100,77 Q72,44 54,74"/>
+          <path d="M100,77 Q78,38 57,46"/>
+          <path d="M100,77 Q86,30 68,24"/>
+          <path d="M100,77 Q94,32 84,10"/>
+          <path d="M100,77 Q100,34 100,4"/>
+          <path d="M100,77 Q106,32 116,10"/>
+          <path d="M100,77 Q114,30 132,24"/>
+          <path d="M100,77 Q122,38 143,46"/>
+          <path d="M100,77 Q128,44 146,74"/>
+        </g>
+      </defs>
+
+      <!-- الترتيب مقصود: يترك حدّاً أبيض بين الجذع والسيفين مثل الشعار -->
+      <use href="#ndSwords" class="mk-out"/>
+      <use href="#ndSwords" class="mk-in"/>
+      <use href="#ndPalm" class="mk-out"/>
+      <use href="#ndPalm" class="mk-in"/>
+    </svg>
+    <h1 class="brand">اكتشف وطنك <span>مع رجا</span></h1>
+  </div>
+  <div class="tag">لعبة اليوم الوطني — فريقان على جهاز واحد</div>
+  <div class="ndbar">
+    <span class="nd-pill" id="ndCount">٢٣ سبتمبر</span>
+    <span class="nd-pill alt">الذكرى ٩٦ للتوحيد</span>
+  </div>
+</header>
+
+<div class="sadu-strip"></div>
+
+<!-- ============ الشاشة الرئيسية ============ -->
+<div class="screen active" id="screen-home">
+  <div class="home-container">
+    <div class="hero-section">
+      <h2 class="hero-title">كل عام والوطن بخير 🌴</h2>
+      <p class="hero-subtitle">٦ فئات × ١٨ سؤالاً في الجولة — والفريق اللي يجمع نقاط أكثر يكسب</p>
+    </div>
+
+    <div class="home-buttons">
+      <button class="btn-main btn-primary" id="btnNewGame">
+        <span class="btn-icon">🎯</span><span>لعبة جديدة</span>
+      </button>
+      <button class="btn-main btn-secondary" id="btnHowTo">
+        <span class="btn-icon">📖</span><span>كيف نلعب</span>
+      </button>
+      <button class="btn-main btn-secondary" id="btnAbout">
+        <span class="btn-icon">ℹ️</span><span>عن اللعبة</span>
+      </button>
+    </div>
+
+    <div class="home-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-info">
+          <div class="stat-label">أسئلة جاهزة</div>
+          <div class="stat-value" id="totalQuestions">--</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📂</div>
+        <div class="stat-info">
+          <div class="stat-label">الفئات</div>
+          <div class="stat-value" id="totalCategories">--</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+          <div class="stat-label">اللاعبون</div>
+          <div class="stat-value">فريقان</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ إعداد الفرق ============ -->
+<div class="screen" id="screen-setup">
+  <div class="step-title">حدد معلومات الفرق</div>
+  <div class="step-sub">اكتب اسم كل فريق واختر ٣ وسائل مساعدة</div>
+  <div class="setup-container">
+    <div class="setup-row" id="teamsSetupContainer"></div>
+  </div>
+  <div class="setup-status" id="setupStatus"></div>
+  <div class="nav-buttons">
+    <button class="btn-main btn-ghost" id="btnSetupBack">← رجوع</button>
+    <button class="btn-main btn-primary" id="btnSetupNext">التالي →</button>
+  </div>
+</div>
+
+<!-- ============ اختيار الفئات ============ -->
+<div class="screen" id="screen-categories">
+  <div class="step-title">اختر فئات الجولة</div>
+  <div class="step-sub">كل ٦ فئات تكوّن جولة كاملة — والكل مختار لك من البداية</div>
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="selection-status" id="selStatus"></div>
+  <div class="nav-buttons">
+    <button class="btn-main btn-ghost" id="btnCatBack">← رجوع</button>
+    <button class="btn-main btn-primary" id="btnStartGame">ابدأ اللعبة 🎮</button>
+  </div>
+</div>
+
+<!-- ============ اللوحة ============ -->
+<div class="screen" id="screen-game">
+  <div class="game-header">
+    <div class="scoreboard" id="scoreboard">
+      <div class="team-card A" id="teamCardA">
+        <div class="team-name" id="gameNameA">الفريق الأول</div>
+        <div class="team-score" id="scoreA">0</div>
+        <div class="team-lifelines" id="lifeDisplayA"></div>
+      </div>
+      <div class="team-card B" id="teamCardB">
+        <div class="team-name" id="gameNameB">الفريق الثاني</div>
+        <div class="team-score" id="scoreB">0</div>
+        <div class="team-lifelines" id="lifeDisplayB"></div>
+      </div>
+    </div>
+    <div class="turn-banner" id="turnBanner"></div>
+    <button class="reset-btn" id="btnResetGame">↺ لعبة جديدة</button>
+  </div>
+
+  <div class="board-wrap"><div class="board" id="board"></div></div>
+</div>
+
+<!-- ============ النهاية ============ -->
+<div class="screen" id="screen-end">
+  <div class="end-wrap">
+    <div class="end-trophy" id="endTrophy">🏆</div>
+    <div class="end-title" id="endTitle">انتهت اللعبة</div>
+    <div class="end-winner" id="endWinner"></div>
+    <div class="end-scores" id="endScores"></div>
+    <div class="nav-buttons">
+      <button class="btn-main btn-ghost" id="btnEndHome">← الرئيسية</button>
+      <button class="btn-main btn-secondary" id="btnShare">📤 شارك النتيجة</button>
+      <button class="btn-main btn-primary" id="btnPlayAgain">🔄 لعبة جديدة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ بنك الأسئلة (لوحة الإدارة) ============ -->
+<div class="screen" id="screen-admin">
+  <div class="admin-header">
+    <div class="step-title">📚 بنك الأسئلة</div>
+    <button class="btn-close" id="btnAdminClose" type="button" title="إغلاق">✕</button>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" type="button" data-tab="questions">📝 الأسئلة</button>
+    <button class="admin-tab" type="button" data-tab="categories">📂 الفئات</button>
+    <button class="admin-tab" type="button" data-tab="points">🏆 النقاط</button>
+    <button class="admin-tab" type="button" data-tab="backup">💾 نسخة احتياطية</button>
+  </div>
+
+  <div class="admin-content">
+
+    <!-- الأسئلة -->
+    <div class="admin-section active" id="tab-questions">
+      <h3 id="qFormTitle">إضافة سؤال</h3>
+      <div class="bank-controls">
+        <select id="bankCatSelect" aria-label="الفئة"></select>
+        <select id="bankDiffSelect" aria-label="المستوى"></select>
+      </div>
+      <div class="admin-form">
+        <input type="text" id="newQEmoji" class="icon-input" placeholder="إيموجي (اختياري)" maxlength="4">
+        <input type="text" id="newQText" placeholder="نص السؤال">
+        <input type="text" id="newQAnswer" placeholder="الإجابة الصحيحة">
+        <div class="admin-form-row">
+          <button class="btn btn-answer" id="btnSaveQ" type="button">+ إضافة سؤال</button>
+          <button class="btn btn-skip" id="btnCancelEdit" type="button" hidden>إلغاء التعديل</button>
+        </div>
+      </div>
+      <div class="bank-list" id="bankList"></div>
+      <div class="bank-count" id="bankCount"></div>
+    </div>
+
+    <!-- الفئات -->
+    <div class="admin-section" id="tab-categories">
+      <h3>الفئات</h3>
+      <div class="admin-form-row">
+        <input type="text" id="newCatIcon" class="icon-input" placeholder="✨" maxlength="4">
+        <input type="text" id="newCatName" placeholder="اسم فئة جديدة">
+        <button class="btn btn-answer" id="btnAddCat" type="button">+ إضافة فئة</button>
+      </div>
+      <p class="admin-hint">اللوحة تتسع لـ ٦ فئات في الجولة الواحدة. الإيموجي اختياري — لو تركته فاضي تصير ✨</p>
+      <div class="cat-admin-list" id="catAdminList"></div>
+    </div>
+
+    <!-- النقاط -->
+    <div class="admin-section" id="tab-points">
+      <h3>نقاط الأسئلة</h3>
+      <div class="points-inputs">
+        <label for="ptEasy">سهل</label><input type="number" id="ptEasy" min="0" step="50">
+        <label for="ptMed">متوسط</label><input type="number" id="ptMed" min="0" step="50">
+        <label for="ptHard">صعب</label><input type="number" id="ptHard" min="0" step="50">
+      </div>
+      <button class="btn btn-answer" id="btnSavePoints" type="button">حفظ النقاط</button>
+      <p class="admin-hint">تنطبق على اللوحة فوراً، وعلى الجولة الجارية إن كانت مفتوحة.</p>
+    </div>
+
+    <!-- نسخة احتياطية -->
+    <div class="admin-section" id="tab-backup">
+      <h3>نسخة احتياطية</h3>
+      <p class="admin-hint">
+        كل تعديلاتك محفوظة في متصفح هذا الجهاز وحده. صدّر ملفاً حتى ما تضيع
+        لو مسحت بيانات المتصفح، أو حتى تنقلها لجهاز ثاني.
+      </p>
+      <div class="admin-form">
+        <button class="btn btn-answer" id="btnExport" type="button">⬇️ تصدير كل شي (ملف JSON)</button>
+        <button class="btn btn-answer" id="btnImport" type="button">⬆️ استيراد من ملف</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <div class="backup-info" id="backupInfo"></div>
+
+      <div class="admin-danger">
+        <h4>↺ استعادة الأصل</h4>
+        <button class="btn btn-skip" id="btnRestore" type="button">رجّع أسئلة اليوم الوطني الأصلية</button>
+        <p class="admin-hint">يرجّع الـ٥٤ سؤالاً والفئات الست كما جت مع اللعبة، ويمسح تعديلاتك.</p>
+        <h4>🗑️ مسح الكل</h4>
+        <button class="btn btn-skip" id="btnWipe" type="button">امسح كل الفئات والأسئلة</button>
+        <p class="admin-hint">لا رجعة فيه — صدّر نسخة أول.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-main btn-ghost" id="btnAdminBack" type="button">← رجوع للعبة</button>
+  </div>
+</div>
+
+<!-- ============ نافذة السؤال ============ -->
+<div class="overlay" id="overlay">
+  <div class="qcard">
+    <button class="btn-close" id="btnCloseQ" title="إغلاق">✕</button>
+    <div class="topline">
+      <div class="qcat" id="qcat"></div>
+      <div class="qpoints" id="qpoints"></div>
+    </div>
+
+    <div class="lifeline-banner" id="lifelineBanner" style="display:none;"></div>
+
+    <div id="qbody">
+      <div class="qimg" id="qimg"></div>
+      <div class="qtext" id="qtext"></div>
+      <div class="atext" id="atext"></div>
+    </div>
+
+    <div class="qtimer" id="qtimer">
+      <button class="btn btn-timer" id="btnTimer">⏱️ ابدأ العدّاد (٦٠ ثانية)</button>
+      <span class="timer-view" id="timerView"></span>
+    </div>
+
+    <div class="corners" id="cornersBar">
+      <div class="corner" id="answerCorner">
+        <span class="corner-label">الإجابة</span>
+        <button class="btn btn-answer" id="toggleAnswerBtn">عرض الإجابة</button>
+      </div>
+      <div class="corner">
+        <span class="corner-label">إعطاء النقاط</span>
+        <div id="awardButtons"></div>
+        <button class="btn btn-skip" id="btnNoAward">بدون نقاط</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ نافذة عامة (تنبيه / تأكيد) ============ -->
+<div class="overlay modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-text" id="modalText"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<footer>
+  <p>اكتشف وطنك مع رجا — من عائلة ألعاب رجا 🌴</p>
+  <p class="foot-sub">كل شي يشتغل على هذا الجهاز — بلا حساب ولا إنترنت</p>
+</footer>
+
+<script src="js/questions.js?v=3"></script>
+<script src="js/game.js?v=3"></script>
+<script src="js/admin.js?v=3"></script>
+
+</body>
+</html>
