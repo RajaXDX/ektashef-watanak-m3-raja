@@ -336,7 +336,7 @@ function renderBackupInfo() {
 function exportBank() {
   Sound.click();
   const data = {
-    app: 'tahadi-alwatani',
+    app: 'ektashef-watanak-m3-raja',
     version: 1,
     exportedAt: new Date().toISOString(),
     categories: CATEGORIES,
