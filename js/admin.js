@@ -405,12 +405,13 @@ async function restoreDefaults() {
   saveJSON(K_CATS, CATEGORIES);
   saveJSON(K_BANK, QBANK);
   saveJSON(K_POINTS, POINTS);
+  saveJSON(K_SEEN, DEFAULT_CATEGORIES.map(c => c.id));
 
   selectedCats = [];
   cancelEdit();
   Sound.award();
   initAdmin();
-  uiAlert('✅ رجعت الفئات الست والـ٥٤ سؤالاً الأصلية');
+  uiAlert(`✅ رجعت الفئات الأصلية: ${CATEGORIES.length} فئات و${countAllQuestions()} سؤالاً`);
 }
 
 async function wipeEverything() {

@@ -164,9 +164,69 @@ let CATEGORIES = loadJSON(K_CATS, null);
 let QBANK = loadJSON(K_BANK, null);
 let POINTS = loadJSON(K_POINTS, null);
 
-if (!Array.isArray(CATEGORIES) || !CATEGORIES.length) CATEGORIES = clone(DEFAULT_CATEGORIES);
+if (!Array.isArray(CATEGORIES)) CATEGORIES = clone(DEFAULT_CATEGORIES);
 if (!QBANK || typeof QBANK !== 'object') QBANK = clone(DEFAULT_QBANK);
 if (!Array.isArray(POINTS) || POINTS.length !== 3) POINTS = [100, 250, 400];
+
+/* ---- فئات أصلية تُضاف مع تحديثات اللعبة ----
+   البنك المحفوظ يتقدّم على الأصل، فمن عنده بنك محفوظ ما يشوف فئة أُضيفت
+   للأصل بعدين. كل فئة أصلية لم تمرّ على هذا المتصفح تُدمج مرة واحدة —
+   ولو حذفها صاحب الجهاز بعدها ما ترجع (المفتاح nd_seen_defaults).
+   ولو كان أنشأ فئة بنفس الموضوع، نعبّي فئته هو بدل ما نكرّرها. */
+const K_SEEN = 'nd_seen_defaults';
+const FIRST_DEFAULTS = ['tawheed', 'rumooz', 'jugh', 'mulook', 'ru2ya', 'turath'];
+
+function normName(s) {
+  return String(s || '')
+    .replace(/[ً-ٰٟـ]/g, '')   // تشكيل وتطويل
+    .replace(/[^ء-يa-z0-9]/gi, '')
+    .replace(/^ال/, '');
+}
+
+(function mergeNewDefaults() {
+  const hasSaved = Array.isArray(loadJSON(K_CATS, null));
+  let seen = loadJSON(K_SEEN, null);
+  if (!Array.isArray(seen)) {
+    // أول تشغيل بعد التحديث: البنك المحفوظ شاف فئات الإصدار الأول فقط
+    seen = hasSaved ? FIRST_DEFAULTS.slice() : DEFAULT_CATEGORIES.map(c => c.id);
+  }
+
+  let changed = false;
+
+  DEFAULT_CATEGORIES.forEach(def => {
+    if (seen.includes(def.id)) return;
+    seen.push(def.id);
+    if (CATEGORIES.some(c => c.id === def.id)) return;
+
+    const key = normName(def.name);
+    const twin = CATEGORIES.find(c => {
+      const n = normName(c.name);
+      return n && (n.includes(key) || (n.length >= 6 && key.includes(n)));
+    });
+    const src = DEFAULT_QBANK[def.id] || {};
+
+    if (twin) {
+      if (!QBANK[twin.id] || typeof QBANK[twin.id] !== 'object') QBANK[twin.id] = {};
+      DIFFKEY.forEach(k => {
+        if (!Array.isArray(QBANK[twin.id][k])) QBANK[twin.id][k] = [];
+        const bucket = QBANK[twin.id][k];
+        (src[k] || []).forEach(item => {
+          if (!bucket.some(x => normName(x.q) === normName(item.q))) bucket.push(clone(item));
+        });
+      });
+    } else {
+      CATEGORIES.push(clone(def));
+      QBANK[def.id] = clone(src);
+    }
+    changed = true;
+  });
+
+  saveJSON(K_SEEN, seen);
+  if (changed && hasSaved) {
+    saveJSON(K_CATS, CATEGORIES);
+    saveJSON(K_BANK, QBANK);
+  }
+})();
 
 /* ============================= الحالة ============================= */
 let teamSetup = {
@@ -758,7 +818,16 @@ function goSetup() {
 function goCategories() {
   Sound.click();
   selectedCats = selectedCats.filter(c => CATEGORIES.some(x => x.id === c.id));
-  if (selectedCats.length === 0) selectedCats = CATEGORIES.slice(0, 6);
+  if (selectedCats.length === 0) {
+    // اللوحة تتسع لست: نختار الأكمل أسئلةً ونتجاهل الفاضية، ونحفظ ترتيبها الأصلي
+    selectedCats = CATEGORIES
+      .map((c, i) => ({ c, i, n: countCategoryQuestions(c.id) }))
+      .filter(x => x.n > 0)
+      .sort((a, b) => b.n - a.n || a.i - b.i)
+      .slice(0, 6)
+      .sort((a, b) => a.i - b.i)
+      .map(x => x.c);
+  }
   showScreen('screen-categories');
   renderCatGrid();
 }
