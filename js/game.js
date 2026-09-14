@@ -529,10 +529,14 @@ function openQuestion(ci, row) {
     $('qbody').innerHTML = '<div class="errbox">ما فيه سؤال محفوظ لهذي الخانة</div>';
     $('cornersBar').style.display = 'none';
   } else {
+    const isImg = (src) => typeof src === 'string' && /^data:image\//.test(src);
     $('qbody').innerHTML = `
-      ${item.img && /^data:image\//.test(item.img)
-        ? `<div class="qimg has-photo"><img src="${escapeHtml(item.img)}" alt=""></div>`
-        : `<div class="qimg">${escapeHtml(item.emoji || '❓')}</div>`}
+      ${isImg(item.img)
+        ? `<div class="qimg has-photo" id="qmedia"><img src="${escapeHtml(item.img)}" alt=""></div>`
+        : `<div class="qimg" id="qmedia">${escapeHtml(item.emoji || '❓')}</div>`}
+      ${isImg(item.aImg)
+        ? `<div class="qimg has-photo hide" id="amedia"><img src="${escapeHtml(item.aImg)}" alt=""></div>`
+        : ''}
       <div class="qtext" id="qtext">${escapeHtml(item.q)}</div>
       <div class="atext" id="atext">${escapeHtml(item.a)}</div>
     `;
@@ -551,14 +555,16 @@ function toggleAnswer() {
   const q = $('qtext'), a = $('atext'), btn = $('toggleAnswerBtn');
   if (!q || !a) return;
 
-  if (a.classList.contains('show')) {
-    a.classList.remove('show');
-    q.classList.remove('hide');
-    btn.textContent = 'عرض الإجابة';
-  } else {
-    a.classList.add('show');
-    q.classList.add('hide');
-    btn.textContent = 'رجوع للسؤال';
+  const showing = !a.classList.contains('show');
+  a.classList.toggle('show', showing);
+  q.classList.toggle('hide', showing);
+  btn.textContent = showing ? 'رجوع للسؤال' : 'عرض الإجابة';
+
+  // لو للإجابة صورة، تحلّ مكان صورة السؤال وقت عرض الإجابة
+  const am = $('amedia');
+  if (am) {
+    am.classList.toggle('hide', !showing);
+    $('qmedia')?.classList.toggle('hide', showing);
   }
 }
 

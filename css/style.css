@@ -661,6 +661,7 @@ header {
 }
 
 .qimg.has-photo { padding: 8px; }
+.qimg.hide { display: none; }
 
 .qimg.has-photo img {
   display: block;
@@ -677,6 +678,8 @@ header {
   align-items: flex-start;
   gap: 6px;
 }
+
+.img-preview[hidden] { display: none; }
 
 .img-preview img {
   width: 72px;

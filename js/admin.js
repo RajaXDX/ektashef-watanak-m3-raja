@@ -10,9 +10,14 @@
 
 let adminReturnScreen = 'screen-home';
 let editing = null;   // { catId, diff, idx } أثناء تعديل سؤال قائم
-let pendingImg = '';  // صورة السؤال في النموذج (data URL مصغّرة)
+// صورتا السؤال والإجابة في النموذج (data URL مصغّرة)
+const pendingImg = { q: '', a: '' };
+const IMG_SLOTS = {
+  q: { field: 'img',  btn: 'btnAddImg',  file: 'newQImgFile', preview: 'newQImgPreview', thumb: 'newQImgThumb', remove: 'btnRemoveImg',  label: 'صورة السؤال' },
+  a: { field: 'aImg', btn: 'btnAddAImg', file: 'newAImgFile', preview: 'newAImgPreview', thumb: 'newAImgThumb', remove: 'btnRemoveAImg', label: 'صورة الإجابة' },
+};
 
-/* ============================= صورة السؤال =============================
+/* ============================= صور السؤال والإجابة =============================
    تُحفظ داخل البنك في localStorage، ومساحته محدودة (~٥ ميغا)، فنصغّر كل
    صورة لأطول ضلع ٨٠٠ بكسل ونضغطها JPEG قبل الحفظ. */
 const IMG_MAX_SIDE = 800;
@@ -38,17 +43,18 @@ function compressImage(file) {
   });
 }
 
-function setPendingImg(dataUrl) {
-  pendingImg = dataUrl || '';
-  $('newQImgThumb').src = pendingImg;
-  $('newQImgPreview').hidden = !pendingImg;
-  $('btnAddImg').textContent = pendingImg ? '🖼️ تغيير الصورة' : '🖼️ إضافة صورة';
+function setPendingImg(slot, dataUrl) {
+  const s = IMG_SLOTS[slot];
+  pendingImg[slot] = dataUrl || '';
+  $(s.thumb).src = pendingImg[slot];
+  $(s.preview).hidden = !pendingImg[slot];
+  $(s.btn).textContent = `🖼️ ${pendingImg[slot] ? 'تغيير ' : ''}${s.label}`;
 }
 
-async function onImagePicked(file) {
+async function onImagePicked(slot, file) {
   if (!file.type.startsWith('image/')) { uiAlert('اختر ملف صورة.'); return; }
   try {
-    setPendingImg(await compressImage(file));
+    setPendingImg(slot, await compressImage(file));
     Sound.select();
   } catch (e) {
     uiAlert('ما قدرت أقرأ الصورة — جرّب صورة ثانية.');
@@ -141,7 +147,8 @@ function saveQuestion() {
   if (!a) { uiAlert('اكتب الإجابة الصحيحة.'); return; }
 
   const item = { emoji: emoji || '❓', q, a };
-  if (pendingImg) item.img = pendingImg;
+  if (pendingImg.q) item.img = pendingImg.q;
+  if (pendingImg.a) item.aImg = pendingImg.a;
 
   if (editing) {
     const sameBucket = editing.catId === catId && editing.diff === diff;
@@ -176,7 +183,8 @@ function editQuestion(catId, diff, idx) {
   $('newQEmoji').value = item.emoji === '❓' ? '' : (item.emoji || '');
   $('newQText').value = item.q;
   $('newQAnswer').value = item.a;
-  setPendingImg(item.img);
+  setPendingImg('q', item.img);
+  setPendingImg('a', item.aImg);
 
   $('qFormTitle').textContent = 'تعديل السؤال';
   $('btnSaveQ').textContent = '💾 احفظ التعديل';
@@ -196,7 +204,8 @@ function clearQForm() {
   $('newQEmoji').value = '';
   $('newQText').value = '';
   $('newQAnswer').value = '';
-  setPendingImg('');
+  setPendingImg('q', '');
+  setPendingImg('a', '');
 }
 
 async function deleteQuestion(catId, diff, idx) {
@@ -239,7 +248,7 @@ function renderBankList() {
     qEl.textContent = `${item.img ? '🖼️' : (item.emoji || '❓')} ${item.q}`;
     const aEl = document.createElement('div');
     aEl.className = 'bank-a';
-    aEl.textContent = item.a;
+    aEl.textContent = `${item.aImg ? '🖼️ ' : ''}${item.a}`;
     body.appendChild(qEl);
     body.appendChild(aEl);
 
@@ -493,13 +502,15 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btnCancelEdit').onclick = () => { Sound.click(); cancelEdit(); clearQForm(); renderBankList(); };
   $('newQAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') saveQuestion(); });
 
-  $('btnAddImg').onclick = () => { Sound.click(); $('newQImgFile').click(); };
-  $('newQImgFile').onchange = e => {
-    const f = e.target.files[0];
-    if (f) onImagePicked(f);
-    e.target.value = '';
-  };
-  $('btnRemoveImg').onclick = () => { Sound.skip(); setPendingImg(''); };
+  Object.entries(IMG_SLOTS).forEach(([slot, s]) => {
+    $(s.btn).onclick = () => { Sound.click(); $(s.file).click(); };
+    $(s.file).onchange = e => {
+      const f = e.target.files[0];
+      if (f) onImagePicked(slot, f);
+      e.target.value = '';
+    };
+    $(s.remove).onclick = () => { Sound.skip(); setPendingImg(slot, ''); };
+  });
 
   $('btnAddCat').onclick = addCategory;
   $('newCatName').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
