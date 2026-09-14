@@ -168,6 +168,18 @@ if (!Array.isArray(CATEGORIES)) CATEGORIES = clone(DEFAULT_CATEGORIES);
 if (!QBANK || typeof QBANK !== 'object') QBANK = clone(DEFAULT_QBANK);
 if (!Array.isArray(POINTS) || POINTS.length !== 3) POINTS = [100, 250, 400];
 
+/* ---- أسماء فئات أصلية تغيّرت ----
+   البنك المحفوظ يحمل الاسم القديم، فنبدّله فقط لو ما عدّله صاحب الجهاز. */
+const RENAMED_DEFAULTS = { turath: { from: 'تراث وفلكلور', to: 'تراث' } };
+(function renameOldDefaults() {
+  let changed = false;
+  CATEGORIES.forEach(c => {
+    const r = RENAMED_DEFAULTS[c.id];
+    if (r && c.name === r.from) { c.name = r.to; changed = true; }
+  });
+  if (changed) saveJSON(K_CATS, CATEGORIES);
+})();
+
 /* ---- فئات أصلية تُضاف مع تحديثات اللعبة ----
    البنك المحفوظ يتقدّم على الأصل، فمن عنده بنك محفوظ ما يشوف فئة أُضيفت
    للأصل بعدين. كل فئة أصلية لم تمرّ على هذا المتصفح تُدمج مرة واحدة —
@@ -518,7 +530,9 @@ function openQuestion(ci, row) {
     $('cornersBar').style.display = 'none';
   } else {
     $('qbody').innerHTML = `
-      <div class="qimg">${escapeHtml(item.emoji || '❓')}</div>
+      ${item.img && /^data:image\//.test(item.img)
+        ? `<div class="qimg has-photo"><img src="${escapeHtml(item.img)}" alt=""></div>`
+        : `<div class="qimg">${escapeHtml(item.emoji || '❓')}</div>`}
       <div class="qtext" id="qtext">${escapeHtml(item.q)}</div>
       <div class="atext" id="atext">${escapeHtml(item.a)}</div>
     `;
@@ -871,15 +885,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   };
 
-  $('btnAbout').onclick = () => {
-    Sound.click();
-    uiAlert(
-      'اكتشف وطنك مع الإمام عاصم — لعبة اليوم الوطني السعودي\n\n' +
-      `${countAllQuestions()} سؤالاً جاهزاً في ${CATEGORIES.length} فئات\n` +
-      'فريقان على جهاز واحد · ٥ وسائل مساعدة · بلا حساب ولا إنترنت\n\n' +
-      'إهداء من رجا المهاشير'
-    );
-  };
+  // «عن اللعبة» شاشة كاملة في js/about.js
 
   // إغلاق نافذة السؤال بزر Esc
   document.addEventListener('keydown', e => {

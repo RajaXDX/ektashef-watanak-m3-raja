@@ -10,6 +10,50 @@
 
 let adminReturnScreen = 'screen-home';
 let editing = null;   // { catId, diff, idx } أثناء تعديل سؤال قائم
+let pendingImg = '';  // صورة السؤال في النموذج (data URL مصغّرة)
+
+/* ============================= صورة السؤال =============================
+   تُحفظ داخل البنك في localStorage، ومساحته محدودة (~٥ ميغا)، فنصغّر كل
+   صورة لأطول ضلع ٨٠٠ بكسل ونضغطها JPEG قبل الحفظ. */
+const IMG_MAX_SIDE = 800;
+
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, IMG_MAX_SIDE / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';   // الشفافية تصير أبيض بدل أسود في JPEG
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg', 0.78));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+    img.src = url;
+  });
+}
+
+function setPendingImg(dataUrl) {
+  pendingImg = dataUrl || '';
+  $('newQImgThumb').src = pendingImg;
+  $('newQImgPreview').hidden = !pendingImg;
+  $('btnAddImg').textContent = pendingImg ? '🖼️ تغيير الصورة' : '🖼️ إضافة صورة';
+}
+
+async function onImagePicked(file) {
+  if (!file.type.startsWith('image/')) { uiAlert('اختر ملف صورة.'); return; }
+  try {
+    setPendingImg(await compressImage(file));
+    Sound.select();
+  } catch (e) {
+    uiAlert('ما قدرت أقرأ الصورة — جرّب صورة ثانية.');
+  }
+}
 
 /* ============================= فتح وإغلاق ============================= */
 function openAdmin() {
@@ -97,6 +141,7 @@ function saveQuestion() {
   if (!a) { uiAlert('اكتب الإجابة الصحيحة.'); return; }
 
   const item = { emoji: emoji || '❓', q, a };
+  if (pendingImg) item.img = pendingImg;
 
   if (editing) {
     const sameBucket = editing.catId === catId && editing.diff === diff;
@@ -131,6 +176,7 @@ function editQuestion(catId, diff, idx) {
   $('newQEmoji').value = item.emoji === '❓' ? '' : (item.emoji || '');
   $('newQText').value = item.q;
   $('newQAnswer').value = item.a;
+  setPendingImg(item.img);
 
   $('qFormTitle').textContent = 'تعديل السؤال';
   $('btnSaveQ').textContent = '💾 احفظ التعديل';
@@ -150,6 +196,7 @@ function clearQForm() {
   $('newQEmoji').value = '';
   $('newQText').value = '';
   $('newQAnswer').value = '';
+  setPendingImg('');
 }
 
 async function deleteQuestion(catId, diff, idx) {
@@ -189,7 +236,7 @@ function renderBankList() {
     body.className = 'bank-item-body';
     const qEl = document.createElement('div');
     qEl.className = 'bank-q';
-    qEl.textContent = `${item.emoji || '❓'} ${item.q}`;
+    qEl.textContent = `${item.img ? '🖼️' : (item.emoji || '❓')} ${item.q}`;
     const aEl = document.createElement('div');
     aEl.className = 'bank-a';
     aEl.textContent = item.a;
@@ -445,6 +492,14 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btnSaveQ').onclick = saveQuestion;
   $('btnCancelEdit').onclick = () => { Sound.click(); cancelEdit(); clearQForm(); renderBankList(); };
   $('newQAnswer').addEventListener('keydown', e => { if (e.key === 'Enter') saveQuestion(); });
+
+  $('btnAddImg').onclick = () => { Sound.click(); $('newQImgFile').click(); };
+  $('newQImgFile').onchange = e => {
+    const f = e.target.files[0];
+    if (f) onImagePicked(f);
+    e.target.value = '';
+  };
+  $('btnRemoveImg').onclick = () => { Sound.skip(); setPendingImg(''); };
 
   $('btnAddCat').onclick = addCategory;
   $('newCatName').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });

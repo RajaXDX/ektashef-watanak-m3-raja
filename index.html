@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- ?v= رقم الإصدار: غيّره عند أي تعديل حتى تصل النسخة الجديدة للمتصفحات -->
-  <link rel="stylesheet" href="css/style.css?v=6">
+  <link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body>
 
@@ -144,6 +144,190 @@
   </div>
 </div>
 
+<!-- ============ عن اللعبة ============
+  قسم «الفئات والأسئلة» يُبنى من البنك عند كل فتح (js/about.js)، أما أرقام
+  «اللغات البرمجية» فمكتوبة بيد مع تاريخ قياسها — لإعادة العدّ:
+    wc -l index.html css/*.css js/*.js
+-->
+<div class="screen" id="screen-about">
+  <div class="step-title">📖 عن اللعبة</div>
+  <div class="step-sub">كيف تُلعب، وبأي أدوات ولغات بُنيت، وكيف وُزّعت فئاتها وأسئلتها</div>
+
+  <div class="about-wrap">
+    <div class="about-toc" id="aboutToc">
+      <button class="about-tab active" type="button" data-sec="play">1 · طريقة اللعب</button>
+      <button class="about-tab" type="button" data-sec="tools">2 · الأدوات</button>
+      <button class="about-tab" type="button" data-sec="langs">3 · اللغات البرمجية</button>
+      <button class="about-tab" type="button" data-sec="bank">4 · الفئات والأسئلة</button>
+    </div>
+
+    <!-- ===================== 1 · طريقة اللعب ===================== -->
+    <section class="about-sec active" id="about-play">
+      <p class="about-lead">
+        فريقان يتنافسان على لوحة من <b>٦ فئات</b> × <b>٣ مستويات</b> —
+        ثمانية عشر سؤالاً عن الوطن — على <b>جهاز واحد</b>، والفريق اللي يجمع نقاط أكثر يكسب.
+      </p>
+
+      <div class="about-step">
+        <div class="about-step-head"><span class="about-num">1</span> سمِّ الفرق واختر وسائل المساعدة</div>
+        <div class="about-body">
+          <p class="about-p">لكل فريق اسم، و<b>ثلاث</b> وسائل مساعدة يختارها من خمس. كل وسيلة تُستعمل مرة واحدة طوال اللعبة، وزرّ «التالي» ما يُفتح قبل ما يكمّل الفريقان.</p>
+          <div class="about-lifelines" id="aboutLifelines"></div>
+        </div>
+      </div>
+
+      <div class="about-step">
+        <div class="about-step-head"><span class="about-num">2</span> اختر فئات الجولة</div>
+        <div class="about-body">
+          <ul class="about-list">
+            <li>اللوحة تتسع لـ<b>ست فئات</b> كحدّ أعلى، وفئة واحدة تكفي للبدء.</li>
+            <li>اللعبة تختار لك مسبقاً <b>الأكمل أسئلةً</b>، وتقدر تبدّل بلمسة.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="about-step">
+        <div class="about-step-head"><span class="about-num">3</span> اللوحة والأدوار</div>
+        <div class="about-body">
+          <ul class="about-list">
+            <li>كل فئة ثلاث خانات: <b class="pt">100</b> سهل، <b class="pt">250</b> متوسط، <b class="pt">400</b> صعب.</li>
+            <li><b>القرعة</b> تختار الفريق اللي يبدأ، وبعدها الدور ينتقل تلقائياً بعد كل سؤال.</li>
+            <li>الخانة المُستهلَكة تُعلَّم بـ ✓ وتُقفل.</li>
+            <li>المجموع وشارة «الدور على» ووسائل كل فريق كلها فوق اللوحة.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="about-step">
+        <div class="about-step-head"><span class="about-num">4</span> السؤال والإجابة</div>
+        <div class="about-body">
+          <ul class="about-list">
+            <li>يقرأ أحدكم السؤال بصوت عالٍ، وفيه <b>عدّاد اختياري ٦٠ ثانية</b>.</li>
+            <li>«عرض الإجابة» يكشفها، ثم تُعطى النقاط لأحد الفريقين أو <b>بدون نقاط</b>.</li>
+            <li>كل خانة تسحب سؤالها <b>عشوائياً</b> من مستواها، فما تتشابه جولتان.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="about-step">
+        <div class="about-step-head"><span class="about-num">5</span> النتيجة</div>
+        <div class="about-body">
+          <p class="about-p">بعد آخر خانة تظهر شاشة الفائز والفارق ومجموع كل فريق، ومعها زرّ <b>مشاركة النتيجة</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 2 · الأدوات ===================== -->
+    <section class="about-sec" id="about-tools">
+      <p class="about-lead">
+        اللعبة <b>بلا أدوات بناء ولا مكتبات</b> — لا npm ولا حزم ولا خوادم.
+        الملفات تُفتح في المتصفح كما هي، وكل شي يشتغل على جهازك.
+      </p>
+
+      <div class="about-cards">
+        <div class="about-card">
+          <div class="ac-ic">🐙</div>
+          <div class="ac-name">GitHub &amp; GitHub Pages</div>
+          <p>المستودع والنشر معاً: كل دفعة إلى الفرع <code>main</code> تنشر النسخة الجديدة مباشرة على <code>rajaxdx.github.io/ektashef-watanak-m3-raja</code>.</p>
+        </div>
+        <div class="about-card">
+          <div class="ac-ic">💾</div>
+          <div class="ac-name">localStorage</div>
+          <p>تعديلات <b>بنك الأسئلة</b> والنقاط تُحفظ في متصفح الجهاز نفسه — بلا حساب ولا سحابة — ومعها تصدير واستيراد بملف JSON.</p>
+        </div>
+        <div class="about-card">
+          <div class="ac-ic">🔊</div>
+          <div class="ac-name">Web Audio API</div>
+          <p>كل أصوات اللعبة <b>مولَّدة داخل المتصفح</b> نغمةً نغمة — لا ملف صوت واحد يُحمَّل.</p>
+        </div>
+        <div class="about-card">
+          <div class="ac-ic">🔤</div>
+          <div class="ac-name">Google Fonts</div>
+          <p>خطّا <b>Cairo</b> و<b>Tajawal</b> — والواجهة كلها عربية من اليمين لليسار.</p>
+        </div>
+        <div class="about-card">
+          <div class="ac-ic">🇸🇦</div>
+          <div class="ac-name">شعار المملكة (SVG)</div>
+          <p>الشعار الرسمي في الترويسة ملف <code>emblem.svg</code> متّجه، يبقى حادّاً على أي شاشة.</p>
+        </div>
+        <div class="about-card">
+          <div class="ac-ic">🧠</div>
+          <div class="ac-name">Claude Code</div>
+          <p>مساعد الذكاء الاصطناعي اللي رافق كتابة الكود ومراجعته وإعداد بنك الأسئلة الوطنية.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3 · اللغات البرمجية ===================== -->
+    <section class="about-sec" id="about-langs">
+      <p class="about-lead">
+        ثلاث لغات لا رابعة لها، ومجموعها <b>3,622 سطراً</b>. النسب والأرقام أدناه قياس فعلي يوم <b>2026-09-14</b>.
+      </p>
+
+      <div class="about-langs">
+        <div class="lang-row">
+          <div class="lang-head"><span class="lang-name">HTML5</span><span class="lang-meta"><b class="lang-pct">13.2%</b><span class="lang-num">477 سطراً</span></span></div>
+          <div class="lang-bar"><i style="width:13.2%"></i></div>
+          <p class="lang-desc">ملف <code>index.html</code> واحد يحمل كل شاشات اللعبة — الرئيسية والإعداد واللوحة ونافذة السؤال ولوحة الإدارة وهذي الشاشة.</p>
+        </div>
+        <div class="lang-row">
+          <div class="lang-head"><span class="lang-name">CSS3</span><span class="lang-meta"><b class="lang-pct">38.5%</b><span class="lang-num">1,396 سطراً</span></span></div>
+          <div class="lang-bar"><i style="width:38.5%"></i></div>
+          <p class="lang-desc"><code>style.css</code>: ليل أخضر وذهب، ونقشة السدو المرسومة بتدرّجات CSS، واتجاه RTL كامل، وتصميم يتكيّف مع الجوال.</p>
+        </div>
+        <div class="lang-row">
+          <div class="lang-head"><span class="lang-name">JavaScript (ES6+)</span><span class="lang-meta"><b class="lang-pct">48.3%</b><span class="lang-num">1,749 سطراً</span></span></div>
+          <div class="lang-bar"><i style="width:48.3%"></i></div>
+          <p class="lang-desc">أربعة ملفات في <code>js/</code> بلا أي مكتبة: <code>game.js</code> قلب اللعبة، و<code>admin.js</code> لوحة الإدارة، و<code>about.js</code> هذي الشاشة، و<code>questions.js</code> بنك الأسئلة الأصلي.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4 · الفئات والأسئلة ===================== -->
+    <section class="about-sec" id="about-bank">
+      <p class="about-lead">
+        الأرقام هنا <b>محسوبة الآن</b> من بنك الأسئلة المحفوظ في جهازك، لا مكتوبة يدوياً —
+        فهي تتغيّر مع كل سؤال يُضاف.
+      </p>
+
+      <div class="about-stats" id="aboutStats"></div>
+
+      <div class="about-block">
+        <div class="about-block-title">كيف تُقسَّم الأسئلة</div>
+        <ul class="about-list">
+          <li>كل فئة ثلاثة مستويات: <b>سهل</b> ← خانة 100، <b>متوسط</b> ← خانة 250، <b>صعب</b> ← خانة 400.</li>
+          <li>الجولة الواحدة تأخذ <b>ست فئات</b> كحدّ أعلى من الفئات كلها.</li>
+          <li>كل خانة تسحب سؤالاً عشوائياً من مستواها، ويثبت لها لو انفتحت مرة ثانية.</li>
+          <li>الأسئلة كلها <b>وطنية خالصة</b>: التوحيد، الرموز، الجغرافيا، الملوك، ولي العهد، الرؤية، والتراث.</li>
+        </ul>
+      </div>
+
+      <div class="about-block">
+        <div class="about-block-title">من أين يأتي البنك</div>
+        <ul class="about-list">
+          <li>البنك الأصلي في <code>questions.js</code> ويجي مع اللعبة.</li>
+          <li>ما تضيفه أو تعدّله من ⚙️ لوحة الإدارة يُحفظ في هذا الجهاز وحده.</li>
+          <li>زرّ «استعادة الأصل» يرجّع الفئات والأسئلة كما جت مع اللعبة.</li>
+        </ul>
+      </div>
+
+      <div class="about-block">
+        <div class="about-block-title">توزيع الفئات — سهل / متوسط / صعب</div>
+        <div class="about-table-wrap">
+          <table class="about-table" id="aboutCatTable"></table>
+        </div>
+      </div>
+    </section>
+
+    <p class="about-note">إهداء من <b>رجا المهاشير</b> 🇸🇦</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn-main btn-ghost" id="btnAboutBack" type="button">← رجوع</button>
+    <button class="btn-main btn-primary" id="btnAboutPlay" type="button">لعبة جديدة 🎮</button>
+  </div>
+</div>
+
 <!-- ============ بنك الأسئلة (لوحة الإدارة) ============ -->
 <div class="screen" id="screen-admin">
   <div class="admin-header">
@@ -171,6 +355,15 @@
         <input type="text" id="newQEmoji" class="icon-input" placeholder="إيموجي (اختياري)" maxlength="4">
         <input type="text" id="newQText" placeholder="نص السؤال">
         <input type="text" id="newQAnswer" placeholder="الإجابة الصحيحة">
+        <div class="admin-form-row img-row">
+          <button class="btn btn-answer" id="btnAddImg" type="button">🖼️ إضافة صورة</button>
+          <input type="file" id="newQImgFile" accept="image/*" hidden>
+          <div class="img-preview" id="newQImgPreview" hidden>
+            <img id="newQImgThumb" alt="صورة السؤال">
+            <button class="icon-btn danger" id="btnRemoveImg" type="button" title="إزالة الصورة">✕</button>
+          </div>
+        </div>
+        <p class="admin-hint">الصورة اختيارية — تظهر مع السؤال مكان الإيموجي، وتُصغَّر تلقائياً حتى ما تملأ مساحة المتصفح.</p>
         <div class="admin-form-row">
           <button class="btn btn-answer" id="btnSaveQ" type="button">+ إضافة سؤال</button>
           <button class="btn btn-skip" id="btnCancelEdit" type="button" hidden>إلغاء التعديل</button>
@@ -284,9 +477,10 @@
   <p class="foot-sub">كل شي يشتغل على هذا الجهاز — بلا حساب ولا إنترنت</p>
 </footer>
 
-<script src="js/questions.js?v=5"></script>
-<script src="js/game.js?v=5"></script>
-<script src="js/admin.js?v=6"></script>
+<script src="js/questions.js?v=6"></script>
+<script src="js/game.js?v=7"></script>
+<script src="js/admin.js?v=7"></script>
+<script src="js/about.js?v=1"></script>
 
 </body>
 </html>
