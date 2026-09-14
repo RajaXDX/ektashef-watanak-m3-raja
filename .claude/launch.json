@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8215", "--bind", "127.0.0.1"],
       "port": 8215
+    },
+    {
+      "name": "watani-alt",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8216", "--bind", "127.0.0.1"],
+      "port": 8216
     }
   ]
 }
