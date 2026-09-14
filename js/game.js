@@ -1,5 +1,5 @@
 /* =========================================================================
-   اكتشف وطنك مع رجا — منطق اللعبة
+   اكتشف وطنك مع الإمام عاصم — منطق اللعبة
    نسخة محلية بالكامل: لا حسابات ولا سحابة. بنك الأسئلة جاهز في questions.js
    ========================================================================= */
 
@@ -767,8 +767,8 @@ function buildResultText() {
   const a = scores.A, b = scores.B;
   const nameA = getTeamName('A'), nameB = getTeamName('B');
   const header = a === b
-    ? '🤝 تعادل في «اكتشف وطنك مع رجا»!'
-    : `🏆 فاز ${a > b ? nameA : nameB} في «اكتشف وطنك مع رجا»!`;
+    ? '🤝 تعادل في «اكتشف وطنك مع الإمام عاصم»!'
+    : `🏆 فاز ${a > b ? nameA : nameB} في «اكتشف وطنك مع الإمام عاصم»!`;
   return `${header}\n\n🟢 ${nameA}: ${a}\n🟡 ${nameB}: ${b}\n\n🇸🇦 كل عام والوطن بخير`;
 }
 
@@ -778,7 +778,7 @@ async function shareResult() {
 
   if (navigator.share) {
     try {
-      await navigator.share({ title: 'اكتشف وطنك مع رجا', text });
+      await navigator.share({ title: 'اكتشف وطنك مع الإمام عاصم', text });
       return;
     } catch (e) {
       if (e?.name === 'AbortError') return;
@@ -874,10 +874,10 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btnAbout').onclick = () => {
     Sound.click();
     uiAlert(
-      'اكتشف وطنك مع رجا — لعبة اليوم الوطني السعودي\n\n' +
+      'اكتشف وطنك مع الإمام عاصم — لعبة اليوم الوطني السعودي\n\n' +
       `${countAllQuestions()} سؤالاً جاهزاً في ${CATEGORIES.length} فئات\n` +
       'فريقان على جهاز واحد · ٥ وسائل مساعدة · بلا حساب ولا إنترنت\n\n' +
-      'من عائلة ألعاب رجا 🌴'
+      'إهداء من رجا المهاشير'
     );
   };
 
